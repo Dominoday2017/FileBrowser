@@ -1,11 +1,17 @@
-import file_scanner
+#import file_scanner
 import os
 
-dir = "/home/dominik/Desktop/Huawei"
+dir_linux = "/home/dominik/Desktop/Huawei"
+dir_windows = "C:/Users/gawla/Desktop/documents"
 
-for file in os.listdir(dir):
-    #if ext is == x then fun
+for file in os.listdir(dir_windows):
     if file.endswith(".txt"):
-        file_scanner.read_txt()
+        print("txt \n")
+        #file_scanner.read_txt()
     elif file.endswith(".docx"):
-        file_scanner.read_doxc()
+        print("doxc \n")
+        #file_scanner.read_doxc()
+    elif file.endswith(".doc"):
+        print("doc \n")
+    elif file.endswith(".odt"):
+        print("odt \n")
