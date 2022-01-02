@@ -1,7 +1,8 @@
+import docx
+
 """
 TODO: add other file extensions
 """
-
 
 class FileScanner:
     def __init__(self, extension, directory, file, wordList):
@@ -18,6 +19,7 @@ class FileScanner:
     def pass_path(self, extension, directory, file):
         """ pick correct extension and pass full path to method """
         fullPath = directory + "/" + file
+        print(fullPath)
         if extension == "txt":
             self.read_txt(fullPath)
         elif extension == "docx":
@@ -37,12 +39,19 @@ class FileScanner:
                     if word in line:
                         counter += 1
 
-        print(counter)
+        #print(counter)
 
     def read_docx(self, path):
         """
         open docx, format to string and read word by word
         :return:
         """
-        print(path)
-        return "docx"
+        doc = docx.Document(path)
+        allParas = doc.paragraphs
+        parasLen = len(allParas)
+        print(allParas[0])
+        for x in range(parasLen):
+
+            for run in allParas[x]:
+                print(run.text)
+
