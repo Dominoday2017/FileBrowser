@@ -1,33 +1,48 @@
 """
-TODO: add other file extensions,
-      get full path to file and pass to specific function
+TODO: add other file extensions
 """
 
 
 class FileScanner:
-    def __init__(self, extension):
-        self.extension = extension
-        self.getExt(self.extension)
-
-    def getExt(self, extension):
-        if extension == "txt":
-            self.read_txt()
-        elif extension == "docx":
-            self.read_docx()
-
-    def read_txt(self):
+    def __init__(self, extension, directory, file, wordList):
         """
-        open txt and read word by word
+        init 3 elements and pass them to pass_path()
+        :param extension: extension of file
+        :param directory: shorted directory to file
+        :param file: name of file with extension
+        """
+        self.wordList = wordList
+
+        self.pass_path(extension, directory, file)
+
+    def pass_path(self, extension, directory, file):
+        """ pick correct extension and pass full path to method """
+        fullPath = directory + "/" + file
+        if extension == "txt":
+            self.read_txt(fullPath)
+        elif extension == "docx":
+            self.read_docx(fullPath)
+
+    def read_txt(self, path):
+        """
+        get path, open file and read line by line. If word in wordList is in line, increase counter by one
+        :param path: full path of file
         :return:
         """
-        print("txt")
+        counter = 0
 
-        return "txt"
+        with open(path, "r") as file:
+            for line in file:
+                for word in self.wordList:
+                    if word in line:
+                        counter += 1
 
-    def read_docx(self):
+        print(counter)
+
+    def read_docx(self, path):
         """
         open docx, format to string and read word by word
         :return:
         """
-        print("docx")
+        print(path)
         return "docx"
