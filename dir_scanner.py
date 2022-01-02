@@ -6,9 +6,9 @@ TODO:
 """
 
 # temp dir
-dir_linux = "/home/dominik/Desktop/documents/"
+dir_linux = "/home/dominik/Desktop/documents"
 dir_windows = "C:/Users/gawla/Desktop/documents"
-wordList = ["jajko", "szynka", "mielonka"]
+wordList = ["Jajko"]
 
 # read all files in dir and pass them to file_scanner
 for file in os.listdir(dir_linux):
