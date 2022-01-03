@@ -1,4 +1,6 @@
 import docx
+import time
+import datetime
 
 """
 TODO: add other file extensions,
@@ -6,29 +8,53 @@ TODO: add other file extensions,
       lower text
 """
 
+""" function logger """
+def log(func):
+    def wrapper(*args, **kwargs):
+        value = func(*args, **kwargs)
+        with open("logs.txt", "a+") as file:
+            now = datetime.datetime.now()
+            file.write(f"{now:%Y-%m-%d %H:%M:%S} >> {func.__name__} \n")
+        return value
+    return wrapper
+
 class FileScanner:
+    @log
     def __init__(self, extension, directory, file, wordList):
         """
-        init 3 elements and pass them to pass_path()
+        init 4 elements and pass them to pass_path()
         :param extension: extension of file
         :param directory: shorted directory to file
         :param file: name of file with extension
+        :param wordList: input word list to find
         """
         self.userWordList = wordList
         self.findSynonyms()
+        self.pass_path(extension, directory, file)
 
-        #self.pass_path(extension, directory, file)
-
+    @log
     def pass_path(self, extension, directory, file):
-        """ pick correct extension and pass full path to method """
+        """
+        pick correct extension and pass full path to method
+        :param extension: file extension like: docx, txt
+        :param directory: directory to file
+        :param file: file name
+        :return:
+        """
         fullPath = directory + "/" + file
-        print(fullPath)
-        if extension == "txt":
-            self.read_txt(fullPath)
-        elif extension == "docx":
-            self.read_docx(fullPath)
 
+        print(extension)
+        if extension == "txt":
+            txtValue = self.read_txt(fullPath)
+        elif extension == "docx":
+            docxValue = self.read_docx(fullPath)
+
+    @log
     def findSynonyms(self):
+        """
+        find all synonyms from word list and return them
+        :return: list with all synonyms
+        """
         self.wordList = []
 
         with open("words.txt", "r") as words:
@@ -41,38 +67,38 @@ class FileScanner:
                         line = line.split(",")
                         if word in line:
                             self.wordList.append(line)
-        print(self.wordList)
 
-
+    @log
     def read_txt(self, path):
         """
-        get path, open file and read line by line. If word in wordList is in line, increase counter by one
+        open file and read line by line. If word in wordList is in line, increase counter by one
         :param path: full path of file
-        :return:
+        :return: number of words in file
         """
         counter = 0
 
         with open(path, "r") as file:
             for line in file:
-                for word in self.userWordList:
-                    if word in line:
-                        counter += 1
+                for word_list in self.wordList:
+                    for word in word_list:
+                        if word in line.lower():
+                            counter += 1
+        return counter
 
-        #print(counter)
-
+    @log
     def read_docx(self, path):
         """
-        open docx, format to string and read word by word
-        :return:
+        open file and read line by line. If word in wordList is in line, increase counter by one
+        :return: number of words in file
         """
         doc = docx.Document(path)
         allParas = doc.paragraphs
         counter = 0
 
         for para in allParas:
-            for word in self.userWordList:
-                if word in str(para.text):
-                    counter += 1
-
-        print(counter)
+            for word_list in self.wordList:
+                for word in word_list:
+                    if word in str(para.text).lower():
+                        counter += 1
+        return counter
 
