@@ -3,9 +3,7 @@ import time
 import datetime
 
 """
-TODO: add other file extensions,
-      edit method comments,
-      lower text
+TODO: add other file extensions
 """
 
 """ function logger """
@@ -17,6 +15,7 @@ def log(func):
             file.write(f"{now:%Y-%m-%d %H:%M:%S} >> {func.__name__} \n")
         return value
     return wrapper
+
 
 class FileScanner:
     @log
