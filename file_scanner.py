@@ -3,7 +3,8 @@ import time
 import datetime
 
 """
-TODO: add other file extensions
+TODO: add other file extensions,
+      connect to main.py
 """
 
 """ function logger """
