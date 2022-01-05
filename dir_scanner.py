@@ -27,7 +27,7 @@ def timer(func):
 """ temp dir and word list """
 dir_linux = "/home/dominik/Desktop/documents"
 dir_windows = "C:/Users/gawla/Desktop/documents"
-wordList = ["policja", "sylwester"]
+wordList = ["dominik", "sylwester"]
 
 
 @timer
@@ -36,13 +36,13 @@ def iter_file():
     read all files in dir and pass them to file_scanner
     :return:
     """
-    for file in os.listdir(dir_linux):
+    for file in os.listdir(dir_windows):
         if "." not in file:
             print("No supported file format")
         else:
             extension = file.split(".")[1]
             if extension in ["docx", "doc", "txt"]:
-                fileScanner = FileScanner(extension, dir_linux, file, wordList)
+                fileScanner = FileScanner(extension, dir_windows, file, wordList)
             else:
                 print("No supported file format")
 

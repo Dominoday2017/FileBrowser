@@ -46,8 +46,10 @@ class FileScanner:
         print(extension)
         if extension == "txt":
             txtValue = self.read_txt(fullPath)
-        elif extension == "docx":
+            print(txtValue)
+        elif extension == "docx" or extension == "doc":
             docxValue = self.read_docx(fullPath)
+            print(docxValue)
 
     @log
     def findSynonyms(self):
@@ -57,7 +59,7 @@ class FileScanner:
         """
         self.wordList = []
 
-        with open("words.txt", "r") as words:
+        with open("words.txt", "r", encoding="utf8") as words:
             words = list(words)
             for line in words:
                 for word in self.userWordList:
@@ -91,6 +93,9 @@ class FileScanner:
         open file and read line by line. If word in wordList is in line, increase counter by one
         :return: number of words in file
         """
+        import os
+        print(os.path.abspath(path))
+
         doc = docx.Document(path)
         allParas = doc.paragraphs
         counter = 0
