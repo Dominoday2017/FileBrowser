@@ -36,13 +36,13 @@ def iter_file():
     read all files in dir and pass them to file_scanner
     :return:
     """
-    for file in os.listdir(dir_windows):
+    for file in os.listdir(dir_linux):
         if "." not in file:
             print("No supported file format")
         else:
             extension = file.split(".")[1]
             if extension in ["docx", "doc", "txt"]:
-                fileScanner = FileScanner(extension, dir_windows, file, wordList)
+                fileScanner = FileScanner(extension, dir_linux, file, wordList)
             else:
                 print("No supported file format")
 

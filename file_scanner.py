@@ -4,7 +4,8 @@ import datetime
 
 """
 TODO: add other file extensions,
-      connect to main.py
+      connect to main.py,
+      install all libraries by script
 """
 
 """ function logger """
@@ -29,7 +30,7 @@ class FileScanner:
         :param wordList: input word list to find
         """
         self.userWordList = wordList
-        self.findSynonyms()
+        self.find_synonyms()
         self.pass_path(extension, directory, file)
 
     @log
@@ -47,12 +48,15 @@ class FileScanner:
         if extension == "txt":
             txtValue = self.read_txt(fullPath)
             print(txtValue)
-        elif extension == "docx" or extension == "doc":
+        elif extension == "docx":
             docxValue = self.read_docx(fullPath)
             print(docxValue)
+        elif extension == "doc":
+            docValue = self.read_doc(fullPath)
+            print(docValue)
 
     @log
-    def findSynonyms(self):
+    def find_synonyms(self):
         """
         find all synonyms from word list and return them
         :return: list with all synonyms
@@ -106,4 +110,7 @@ class FileScanner:
                     if word in str(para.text).lower():
                         counter += 1
         return counter
+
+    def read_doc(self, path):
+        pass
 
