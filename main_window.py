@@ -1,21 +1,19 @@
-import kivy
-from kivy.app import App
-from kivy.uix.widget import Widget
-from kivy.properties import ObjectProperty
+import sys
+from PyQt5.QtWidgets import QMainWindow, QAction, qApp, QApplication, QFileDialog
+from PyQt5.QtGui import QIcon
+from PyQt5 import QtWidgets, uic
 
 
-class WindowElements(Widget):
-    btn = ObjectProperty(None)
+class MainWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        uic.loadUi("main_window.ui", self)
+        self.show()
 
-    def btn_touch_up(self):
-        print('Touch Up')
-        from subprocess import Popen, PIPE
-        process = Popen(['python3', 'path_window.py'], stdout=PIPE, stderr=PIPE)
+def main():
+    app = QApplication(sys.argv)
+    mainWindow = MainWindow()
+    sys.exit(app.exec_()) #safe exit from app
 
-
-class WindowApp(App):
-    def build(self):
-        return WindowElements()
-
-
-WindowApp().run()
+if __name__ == "__main__":
+    main()
