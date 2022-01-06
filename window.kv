@@ -1,0 +1,28 @@
+# Filename : window.kv
+
+<WindowElements>
+    btn:btn
+    BoxLayout:
+        orientation: 'vertical'
+        size: root.width, root.height
+
+        GridLayout:
+            cols: 2
+
+            Label:
+                text: 'Path:'
+
+            Button:
+                id: btn
+                text: 'Choose'
+                on_release: root.btn_touch_up()
+
+        GridLayout:
+            cols: 3
+
+        GridLayout:
+            cols: 2
+
+
+
+
