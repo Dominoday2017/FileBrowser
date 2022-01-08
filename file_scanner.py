@@ -3,7 +3,7 @@ import datetime
 
 
 """
-TODO: add other file extensions,
+TODO: add other file extensions
 """
 
 
@@ -32,8 +32,8 @@ class FileScanner:
         :param file: name of file with extension
         :param wordList: input word list to find
         """
-        self.userWordList = wordList
-        self.keywords = [] #final
+        self.userWordList = wordList # Init keywords list (only user words)
+        self.keywords = [] #final keywords list
 
         self.findSynonyms()
         self.pass_path(extension, directory, file)
@@ -49,7 +49,6 @@ class FileScanner:
         """
         fullPath = directory + "/" + file
 
-        print(extension)
         if extension == ".txt":
             txtValue = self.read_txt(fullPath)
             print(txtValue)
@@ -63,7 +62,6 @@ class FileScanner:
         find all synonyms from word list and return them
         :return: list with all synonyms
         """
-
         with open("words.txt", "r", encoding="utf8") as words:
             words = list(words)
             for line in words:
@@ -74,6 +72,12 @@ class FileScanner:
                         line = line.split(",")
                         if word in line:
                             self.keywords.append(line)
+                            if [word] not in self.keywords:
+                                self.keywords.append([word])
+                        else:
+                            if [word] not in self.keywords:
+                                self.keywords.append([word])
+        print(self.keywords)
 
     @log
     def read_txt(self, path):
@@ -98,20 +102,25 @@ class FileScanner:
         open file and read line by line. If word in wordList is in line, increase counter by one
         :return: number of words in file
         """
-        import os
-        print(os.path.abspath(path))
-
         doc = docx.Document(path)
         allParas = doc.paragraphs
         counter = 0
 
-        for para in allParas:
-            for word_list in self.keywords:
-                for word in word_list:
-                    if word in str(para.text).lower():
+        for para in allParas:                           # Read all paragraphs from text
+            for word_list in self.keywords:             # Iterate lists in list ([["jajko", "musztarda"], ["kapusta", "pomidor"]]
+                for word in word_list:                  # Iterate all words in list of word_list
+                    if word in str(para.text).lower():  # If word is in paragraph
                         counter += 1
-
-        print(counter)
         return counter
 
-test = FileScanner(".docx", "/home/dominik/Desktop/documents", "List.docx", "życzenia")
+# Example
+"""
+words = ["produkcja", "wrocław"]
+test = FileScanner(
+    ".docx",
+    "/home/dominik/Desktop/documents",
+    "Krótka historia aparatury pomiarowej w ELWRO.docx",
+    words
+)
+"""
+

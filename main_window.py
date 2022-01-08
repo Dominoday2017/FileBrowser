@@ -6,7 +6,7 @@ from PyQt5 import QtWidgets, uic
 
 
 """
-TODO:
+TODO: comments
 """
 
 
