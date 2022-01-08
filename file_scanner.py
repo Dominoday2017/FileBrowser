@@ -1,14 +1,18 @@
 import docx
-import time
 import datetime
+
 
 """
 TODO: add other file extensions,
-      connect to main.py
 """
 
-""" function logger """
+
 def log(func):
+    """
+    function logger
+    :param func: function
+    :return: function value
+    """
     def wrapper(*args, **kwargs):
         value = func(*args, **kwargs)
         with open("logs.txt", "a+") as file:

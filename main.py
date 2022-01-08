@@ -1,12 +1,9 @@
-# Import kyvi app and label, from uix
-from kivy.app import App
-from kivy.uix.label import Label
+from PyQt5.QtWidgets import QApplication
+import sys
+import main_window
 
 
-class MyApp(App):
-    def build(self):
-        return Label(text='Tech with Tim')
-
-
-if __name__=="__main__":
-    MyApp().run()
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    window = main_window.MainWindow()
+    sys.exit(app.exec_())

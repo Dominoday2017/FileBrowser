@@ -3,9 +3,11 @@ import os
 import time
 import datetime
 
+
 """
-TODO: change script to OOP
+TODO:
 """
+
 
 def timer(func):
     """
@@ -24,27 +26,23 @@ def timer(func):
     return wrapper
 
 
-""" temp dir and word list """
-dir_linux = "/home/dominik/Desktop/documents"
-dir_windows = "C:/Users/gawla/Desktop/documents"
-wordList = ["dominik", "sylwester"]
+class DirScanner:
+    def __init__(self, keywords, directory):
+        self.keywords = keywords
+        self.directory = directory
 
-
-@timer
-def iter_file():
-    """
-    read all files in dir and pass them to file_scanner
-    :return:
-    """
-    for file in os.listdir(dir_windows):
-        if "." not in file:
-            print("No supported file format")
-        else:
-            extension = file.split(".")[1]
-            if extension in ["docx", "doc", "txt"]:
-                fileScanner = FileScanner(extension, dir_windows, file, wordList)
-            else:
+    @timer
+    def iter_file(self):
+        """
+        read all files in dir and pass them to file_scanner
+        :return:
+        """
+        for file in os.listdir(self.directory):
+            if "." not in file:
                 print("No supported file format")
-
-
-iter_file()
+            else:
+                extension = file.split(".")[1]
+                if extension in ["docx", "doc", "txt"]:
+                    fileScanner = FileScanner(extension, self.directory, file, self.keywords)
+                else:
+                    print("No supported file format")

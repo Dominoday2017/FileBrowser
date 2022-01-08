@@ -1,4 +1,5 @@
 import sys
+import dir_scanner
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5 import QtWidgets, uic
@@ -7,6 +8,10 @@ from PyQt5 import QtWidgets, uic
 """
 TODO: check if keywords already exists
 """
+
+
+dir_linux = "/home/dominik/Desktop/documents"
+dir_windows = "C:/Users/gawla/Desktop/documents"
 
 
 class GetKeywords(QDialog):
@@ -42,12 +47,13 @@ class GetKeywords(QDialog):
     def close_window(self):
         self.close()
 
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         uic.loadUi("main_window.ui", self)
 
-        self.pathBtn.clicked.connect(self.get_path) #binding pathBtn button
+        self.pathBtn.clicked.connect(self.get_path)
         self.addBtn.clicked.connect(self.get_keywords)
 
         self.show()
@@ -68,12 +74,3 @@ class MainWindow(QMainWindow):
 
             keywordsStr = keywordsStr[0:len(keywordsStr)-2]
             self.keywordsEdit.setText(keywordsStr)
-
-
-def main():
-    app = QApplication(sys.argv)
-    mainWindow = MainWindow()
-    sys.exit(app.exec_()) #safe exit from app
-
-if __name__ == "__main__":
-    main()
