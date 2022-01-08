@@ -1,5 +1,5 @@
 import sys
-import dir_scanner
+from dir_scanner import DirScanner
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5 import QtWidgets, uic
@@ -53,14 +53,18 @@ class MainWindow(QMainWindow):
         super().__init__()
         uic.loadUi("main_window.ui", self)
 
+        self.keywords = []
+        self.path = ""
+
         self.pathBtn.clicked.connect(self.get_path)
         self.addBtn.clicked.connect(self.get_keywords)
+        self.searchBtn.clicked.connect(self.run_dirscanner)
 
         self.show()
 
     def get_path(self):
-        path = str(QFileDialog.getExistingDirectory(self, "Select directory"))
-        self.pathEdit.setText(path)
+        self.path = str(QFileDialog.getExistingDirectory(self, "Select directory"))
+        self.pathEdit.setText(self.path)
 
     def get_keywords(self):
         self.getKeywords = GetKeywords()
@@ -68,9 +72,17 @@ class MainWindow(QMainWindow):
 
         if not self.getKeywords.isVisible():
             keywordsStr = ""
-            print( keywords := self.getKeywords.keywords)
-            for el in keywords:
+            self.keywords = self.getKeywords.keywords
+
+            for el in self.keywords:
                 keywordsStr += el + ", "
 
             keywordsStr = keywordsStr[0:len(keywordsStr)-2]
             self.keywordsEdit.setText(keywordsStr)
+
+    def run_dirscanner(self):
+        keywords = self.keywordsEdit.text()
+        path = self.pathEdit.text()
+
+        print(keywords, path)
+        dirscanner = DirScanner(keywords, path)

@@ -33,6 +33,8 @@ class FileScanner:
         :param wordList: input word list to find
         """
         self.userWordList = wordList
+        self.keywords = [] #final
+
         self.findSynonyms()
         self.pass_path(extension, directory, file)
 
@@ -48,10 +50,10 @@ class FileScanner:
         fullPath = directory + "/" + file
 
         print(extension)
-        if extension == "txt":
+        if extension == ".txt":
             txtValue = self.read_txt(fullPath)
             print(txtValue)
-        elif extension == "docx" or extension == "doc":
+        elif extension == ".docx":
             docxValue = self.read_docx(fullPath)
             print(docxValue)
 
@@ -61,7 +63,6 @@ class FileScanner:
         find all synonyms from word list and return them
         :return: list with all synonyms
         """
-        self.wordList = []
 
         with open("words.txt", "r", encoding="utf8") as words:
             words = list(words)
@@ -72,7 +73,7 @@ class FileScanner:
                         line = line.replace("\n", "")
                         line = line.split(",")
                         if word in line:
-                            self.wordList.append(line)
+                            self.keywords.append(line)
 
     @log
     def read_txt(self, path):
@@ -85,7 +86,7 @@ class FileScanner:
 
         with open(path, "r") as file:
             for line in file:
-                for word_list in self.wordList:
+                for word_list in self.keywords:
                     for word in word_list:
                         if word.lower() in line.lower():
                             counter += 1
@@ -105,9 +106,12 @@ class FileScanner:
         counter = 0
 
         for para in allParas:
-            for word_list in self.wordList:
+            for word_list in self.keywords:
                 for word in word_list:
                     if word in str(para.text).lower():
                         counter += 1
+
+        print(counter)
         return counter
 
+test = FileScanner(".docx", "C:/Users/gawla/Desktop/documents", "List.docx", "życzenia")
