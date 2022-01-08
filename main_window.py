@@ -6,7 +6,7 @@ from PyQt5 import QtWidgets, uic
 
 
 """
-TODO: check if keywords already exists
+TODO:
 """
 
 
@@ -28,12 +28,19 @@ class GetKeywords(QDialog):
 
     def add_keyword(self):
         keyword = self.keywordEdit.text()
+        wordList = []
         if keyword == "":
-            warning = QMessageBox.warning(None, 'Błąd danych wejściowych', "Nie można dodawać pustych elementów do listy.")
+            warning = QMessageBox.warning(None, "Błąd danych wejściowych", "Nie można dodawać pustych elementów do listy.")
         else:
-            self.keywordsListWidget.addItem(keyword)
-            self.keywordEdit.setText("")
-    #check if element already exsist
+            for el in range(self.keywordsListWidget.count()):
+                wordList.append(self.keywordsListWidget.item(el).text())
+
+            if keyword in wordList:
+                    waring = QMessageBox.warning(None, "Błąd danych wejściowych", "Podany element już się znajduje na liście.")
+            else:
+                self.keywordsListWidget.addItem(keyword)
+                self.keywordEdit.setText("")
+
     def remove_element(self):
         item = self.keywordsListWidget.currentRow()
         self.keywordsListWidget.takeItem(item)

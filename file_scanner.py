@@ -114,4 +114,4 @@ class FileScanner:
         print(counter)
         return counter
 
-test = FileScanner(".docx", "C:/Users/gawla/Desktop/documents", "List.docx", "życzenia")
+test = FileScanner(".docx", "/home/dominik/Desktop/documents", "List.docx", "życzenia")
