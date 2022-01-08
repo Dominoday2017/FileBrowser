@@ -18,9 +18,9 @@ def timer(func):
     def wrapper(*args, **kwargs):
         before = time.time()
         v = func(*args, **kwargs)
-        now = time.time() - before
+        workTime = time.time() - before
         with open("timer_logs", "a+") as file:
-            file.write(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} >> Work time: {now} \n")
+            file.write(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} >> Work time: {workTime} \n")
         return v
 
     return wrapper

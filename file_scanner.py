@@ -87,7 +87,7 @@ class FileScanner:
             for line in file:
                 for word_list in self.wordList:
                     for word in word_list:
-                        if word in line.lower():
+                        if word.lower() in line.lower():
                             counter += 1
         return counter
 

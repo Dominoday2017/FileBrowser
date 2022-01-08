@@ -33,7 +33,7 @@ class GetKeywords(QDialog):
         else:
             self.keywordsListWidget.addItem(keyword)
             self.keywordEdit.setText("")
-
+    #check if element already exsist
     def remove_element(self):
         item = self.keywordsListWidget.currentRow()
         self.keywordsListWidget.takeItem(item)
