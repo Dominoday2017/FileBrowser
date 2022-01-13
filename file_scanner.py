@@ -44,7 +44,7 @@ class DirScanner:
         self.keywords = keywords
         self.directory = directory
         self.result = {}
-
+        print("Slowa kluczoe dir scanner", keywords)
         self.iter_file()
 
     #@timer
@@ -93,7 +93,7 @@ class FileScanner:
         :return:
         """
         fullPath = directory + "/" + file
-        #print(extension)
+
         if extension == "txt":
             txtValue = self.read_txt(fullPath)
             self.result[file] = txtValue
@@ -108,6 +108,9 @@ class FileScanner:
         find all synonyms from word list and return them
         :return: list with all synonyms
         """
+        for wordStatic in self.userWordList:
+            self.keywords.append(wordStatic)
+
         with open("words.txt", "r", encoding="utf8") as words:
             words = list(words)
             for line in words:
@@ -123,6 +126,7 @@ class FileScanner:
                         else:
                             if [word] not in self.keywords:
                                 self.keywords.append([word])
+
         #print(self.keywords)
 
     #@log

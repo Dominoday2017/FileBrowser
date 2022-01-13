@@ -48,7 +48,7 @@
        <item row="0" column="1">
         <widget class="QLineEdit" name="pathEdit">
          <property name="text">
-          <string/>
+          <string>C:/Users/gawla/Desktop/documents</string>
          </property>
          <property name="readOnly">
           <bool>true</bool>

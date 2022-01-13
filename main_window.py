@@ -6,7 +6,7 @@ from PyQt5 import QtWidgets, uic
 
 
 """
-TODO: comments, empty values after search
+TODO: comments, search by title
 """
 
 
@@ -95,7 +95,7 @@ class MainWindow(QMainWindow):
 
             for el in self.keywords:
                 keywordsStr += el + ", "
-                self.keywordsList.append(el)
+                #self.keywordsList.append(el)
 
             keywordsStr = keywordsStr[0:len(keywordsStr)-2]
             self.keywordsEdit.setText(keywordsStr)
@@ -103,7 +103,8 @@ class MainWindow(QMainWindow):
     def file_scanner(self):
         try:
             path = self.pathEdit.text()
-            dirscanner = DirScanner(self.keywordsList, path)
+            keywordsList = [x.replace(" ", "") for x in self.keywordsEdit.text().split(",")]
+            dirscanner = DirScanner(keywordsList, path)
             results = dirscanner.result
 
             countRow = int(self.resultBox.currentText())
@@ -113,7 +114,7 @@ class MainWindow(QMainWindow):
             header.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
 
             results = {k: v for k, v in sorted(results.items(), key=lambda item: item[1], reverse=True)}
-
+            print(results)
             tempResult = {}
             totalValue = 0
             counter = 0
@@ -123,12 +124,16 @@ class MainWindow(QMainWindow):
                     tempResult[key] = value
                     counter += 1
                     totalValue += value
+            if totalValue == 0:
+                warning = QMessageBox.warning(None, "Błąd", "Nie znaleziono pasującego pliku. Spróbuj z innymi słowami")
+            else:
+                results = tempResult
+                print(results)
 
-            results = tempResult
-            counter = 0
-            for path, value in zip(results.keys(), results.values()):
-                self.resultTableWidget.setItem(counter, 0, QTableWidgetItem(path))
-                self.resultTableWidget.setItem(counter, 1, QTableWidgetItem(str(round(value / totalValue * 100, 2)) + "%"))
-                counter += 1
+                counter = 0
+                for path, value in zip(results.keys(), results.values()):
+                    self.resultTableWidget.setItem(counter, 0, QTableWidgetItem(path))
+                    self.resultTableWidget.setItem(counter, 1, QTableWidgetItem(str(round(value / totalValue * 100, 2)) + "%"))
+                    counter += 1
         except:
             warning = QMessageBox.warning(None, "Błąd danych wejściowych", "Niepoprawne dane wejsciowe")
