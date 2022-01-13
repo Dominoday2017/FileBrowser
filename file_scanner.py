@@ -44,7 +44,6 @@ class DirScanner:
         self.keywords = keywords
         self.directory = directory
         self.result = {}
-        print("Slowa kluczoe dir scanner", keywords)
         self.iter_file()
 
     #@timer

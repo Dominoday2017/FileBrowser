@@ -6,7 +6,7 @@ from PyQt5 import QtWidgets, uic
 
 
 """
-TODO: comments, search by title
+TODO: comments, search by title, add search by sentence, advanced logger
 """
 
 
@@ -14,6 +14,7 @@ class GetKeywords(QDialog):
     def __init__(self, actualKeywords=[]):
         super().__init__()
         uic.loadUi("add_keywords.ui", self)
+        self.setFixedSize(400, 300)
         self.keywords = []
         print(actualKeywords)
 
@@ -61,6 +62,8 @@ class MainWindow(QMainWindow):
         super().__init__()
         uic.loadUi("main_window.ui", self)
 
+        self.setFixedSize(610, 530)
+
         self.keywordsList = []
         self.path = ""
 
@@ -104,36 +107,38 @@ class MainWindow(QMainWindow):
         try:
             path = self.pathEdit.text()
             keywordsList = [x.replace(" ", "") for x in self.keywordsEdit.text().split(",")]
-            dirscanner = DirScanner(keywordsList, path)
-            results = dirscanner.result
+            print(path, keywordsList)
+            if path != "" and keywordsList[0] != "":
+                dirscanner = DirScanner(keywordsList, path)
+                results = dirscanner.result
 
-            countRow = int(self.resultBox.currentText())
-            self.resultTableWidget.setRowCount(countRow)
-            header = self.resultTableWidget.horizontalHeader()
-            header.setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch)
-            header.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
+                countRow = int(self.resultBox.currentText())
+                self.resultTableWidget.setRowCount(countRow)
+                header = self.resultTableWidget.horizontalHeader()
+                header.setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch)
+                header.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
 
-            results = {k: v for k, v in sorted(results.items(), key=lambda item: item[1], reverse=True)}
-            print(results)
-            tempResult = {}
-            totalValue = 0
-            counter = 0
-
-            for key, value in zip(results.keys(), results.values()):
-                if counter < countRow:
-                    tempResult[key] = value
-                    counter += 1
-                    totalValue += value
-            if totalValue == 0:
-                warning = QMessageBox.warning(None, "Błąd", "Nie znaleziono pasującego pliku. Spróbuj z innymi słowami")
-            else:
-                results = tempResult
-                print(results)
-
+                results = {k: v for k, v in sorted(results.items(), key=lambda item: item[1], reverse=True)}
+                tempResult = {}
+                totalValue = 0
                 counter = 0
-                for path, value in zip(results.keys(), results.values()):
-                    self.resultTableWidget.setItem(counter, 0, QTableWidgetItem(path))
-                    self.resultTableWidget.setItem(counter, 1, QTableWidgetItem(str(round(value / totalValue * 100, 2)) + "%"))
-                    counter += 1
+
+                for key, value in zip(results.keys(), results.values()):
+                    if counter < countRow:
+                        tempResult[key] = value
+                        counter += 1
+                        totalValue += value
+                if totalValue == 0:
+                    warning = QMessageBox.warning(None, "Błąd", "Nie znaleziono pasującego pliku. Spróbuj z innymi słowami")
+                else:
+                    results = tempResult
+                    counter = 0
+
+                    for path, value in zip(results.keys(), results.values()):
+                        self.resultTableWidget.setItem(counter, 0, QTableWidgetItem(path))
+                        self.resultTableWidget.setItem(counter, 1, QTableWidgetItem(str(round(value / totalValue * 100, 2)) + "%"))
+                        counter += 1
+            else:
+                warning = QMessageBox.warning(None, "Błąd danych wejściowych", "Ścieżka i słowa kluczowe nie mogą być puste.")
         except:
             warning = QMessageBox.warning(None, "Błąd danych wejściowych", "Niepoprawne dane wejsciowe")

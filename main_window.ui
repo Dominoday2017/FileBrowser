@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>606</width>
-    <height>526</height>
+    <width>600</width>
+    <height>520</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,10 +17,10 @@
    <widget class="QWidget" name="verticalLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>10</y>
-      <width>581</width>
-      <height>461</height>
+      <x>0</x>
+      <y>0</y>
+      <width>601</width>
+      <height>471</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
@@ -30,8 +30,14 @@
      <property name="sizeConstraint">
       <enum>QLayout::SetDefaultConstraint</enum>
      </property>
+     <property name="leftMargin">
+      <number>5</number>
+     </property>
      <property name="topMargin">
       <number>10</number>
+     </property>
+     <property name="rightMargin">
+      <number>5</number>
      </property>
      <property name="bottomMargin">
       <number>10</number>
@@ -40,23 +46,47 @@
       <layout class="QGridLayout" name="gridLayout">
        <item row="1" column="1">
         <widget class="QLineEdit" name="keywordsEdit">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
          <property name="readOnly">
           <bool>true</bool>
+         </property>
+         <property name="placeholderText">
+          <string>tutaj będą twoje słowe kluczowe po wprowadzeniu..</string>
          </property>
         </widget>
        </item>
        <item row="0" column="1">
         <widget class="QLineEdit" name="pathEdit">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="inputMask">
+          <string/>
+         </property>
          <property name="text">
-          <string>C:/Users/gawla/Desktop/documents</string>
+          <string/>
          </property>
          <property name="readOnly">
           <bool>true</bool>
+         </property>
+         <property name="placeholderText">
+          <string>tutaj pojawi się twoja ścieżka..</string>
          </property>
         </widget>
        </item>
        <item row="1" column="0">
         <widget class="QLabel" name="label_2">
+         <property name="font">
+          <font>
+           <pointsize>11</pointsize>
+          </font>
+         </property>
          <property name="text">
           <string>Słowa kluczowe:</string>
          </property>
@@ -64,6 +94,11 @@
        </item>
        <item row="2" column="0">
         <widget class="QLabel" name="label_3">
+         <property name="font">
+          <font>
+           <pointsize>11</pointsize>
+          </font>
+         </property>
          <property name="text">
           <string>Liczba wyników:</string>
          </property>
@@ -71,13 +106,26 @@
        </item>
        <item row="0" column="2">
         <widget class="QPushButton" name="pathBtn">
+         <property name="font">
+          <font>
+           <pointsize>11</pointsize>
+          </font>
+         </property>
          <property name="text">
           <string>Wyszukaj</string>
          </property>
         </widget>
        </item>
-       <item row="2" column="1">
+       <item row="2" column="1" alignment="Qt::AlignLeft">
         <widget class="QComboBox" name="resultBox">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="sizeAdjustPolicy">
+          <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
+         </property>
          <item>
           <property name="text">
            <string>1</string>
@@ -107,6 +155,11 @@
        </item>
        <item row="0" column="0">
         <widget class="QLabel" name="label">
+         <property name="font">
+          <font>
+           <pointsize>11</pointsize>
+          </font>
+         </property>
          <property name="text">
           <string>Ścieżka:</string>
          </property>
@@ -114,6 +167,11 @@
        </item>
        <item row="1" column="2">
         <widget class="QPushButton" name="addBtn">
+         <property name="font">
+          <font>
+           <pointsize>11</pointsize>
+          </font>
+         </property>
          <property name="text">
           <string>Dodaj</string>
          </property>
@@ -128,6 +186,12 @@
        </property>
        <item>
         <widget class="QTableWidget" name="resultTableWidget">
+         <property name="sizeIncrement">
+          <size>
+           <width>50</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="font">
           <font>
            <pointsize>12</pointsize>
@@ -174,15 +238,37 @@
        </property>
        <item>
         <widget class="QPushButton" name="cancelBtn">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>14</pointsize>
+          </font>
+         </property>
          <property name="text">
-          <string>Anuluj</string>
+          <string>     Anuluj     </string>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QPushButton" name="searchBtn">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>14</pointsize>
+          </font>
+         </property>
          <property name="text">
-          <string>Szukaj</string>
+          <string>     Szukaj     </string>
          </property>
         </widget>
        </item>
@@ -196,7 +282,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>606</width>
+     <width>600</width>
      <height>21</height>
     </rect>
    </property>
