@@ -12,11 +12,15 @@ TODO: comments, search by title, add search by sentence, advanced logger
 
 class GetKeywords(QDialog):
     def __init__(self, actualKeywords=[]):
+        """
+        init previously added keywords if passed and add button functionality
+        :param actualKeywords: previously added keywords
+        """
         super().__init__()
         uic.loadUi("add_keywords.ui", self)
+
         self.setFixedSize(400, 300)
         self.keywords = []
-        print(actualKeywords)
 
         if actualKeywords:
             for el in actualKeywords:
@@ -26,9 +30,14 @@ class GetKeywords(QDialog):
         self.addBtn.clicked.connect(self.add_keyword)
         self.removeBtn.clicked.connect(self.remove_element)
         self.saveBtn.clicked.connect(self.save_keywords)
+
         self.show()
 
     def add_keyword(self):
+        """
+        Firstly check if any keywords already exits, if not get text from keywordsEdit and display in keywordsListWidget
+        :return: None
+        """
         keyword = self.keywordEdit.text()
         wordList = []
         if keyword == "":
@@ -44,21 +53,36 @@ class GetKeywords(QDialog):
                 self.keywordEdit.setText("")
 
     def remove_element(self):
+        """
+        remove selected item from keywordsListWidget
+        :return: None
+        """
         item = self.keywordsListWidget.currentRow()
         self.keywordsListWidget.takeItem(item)
 
     def save_keywords(self):
+        """
+        Take element (keyword) from keywordsListWidget and add to keywords list
+        :return: None
+        """
         for el in range(self.keywordsListWidget.count()):
             self.keywords.append(self.keywordsListWidget.item(el).text())
 
         self.close()
 
     def close_window(self):
+        """
+        close window on close button
+        :return: None
+        """
         self.close()
 
 
 class MainWindow(QMainWindow):
     def __init__(self):
+        """
+        load window ui, add button functionality, init all necessary objects
+        """
         super().__init__()
         uic.loadUi("main_window.ui", self)
 
@@ -79,10 +103,18 @@ class MainWindow(QMainWindow):
         self.show()
 
     def get_path(self):
+        """
+        get path from QFileDialog
+        :return: None
+        """
         self.path = str(QFileDialog.getExistingDirectory(self, "Select directory"))
         self.pathEdit.setText(self.path)
 
     def get_keywords(self):
+        """
+        
+        :return: None
+        """
         if self.keywordsEdit.text() != "":
             temp = self.keywordsEdit.text().split(",")
             actualKeywords = [x.replace(" ", "") for x in temp]
