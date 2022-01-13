@@ -10,15 +10,16 @@ TODO: comments, empty values after search
 """
 
 
-dir_linux = "/home/dominik/Desktop/documents"
-dir_windows = "C:/Users/gawla/Desktop/documents"
-
-
 class GetKeywords(QDialog):
-    def __init__(self, parent=None):
-        super().__init__(parent)
+    def __init__(self, actualKeywords=[]):
+        super().__init__()
         uic.loadUi("add_keywords.ui", self)
         self.keywords = []
+        print(actualKeywords)
+
+        if actualKeywords:
+            for el in actualKeywords:
+                self.keywordsListWidget.addItem(el)
 
         self.cancelBtn.clicked.connect(self.close_window)
         self.addBtn.clicked.connect(self.add_keyword)
@@ -79,7 +80,13 @@ class MainWindow(QMainWindow):
         self.pathEdit.setText(self.path)
 
     def get_keywords(self):
-        self.getKeywords = GetKeywords()
+        if self.keywordsEdit.text() != "":
+            temp = self.keywordsEdit.text().split(",")
+            actualKeywords = [x.replace(" ", "") for x in temp]
+            self.getKeywords = GetKeywords(actualKeywords)
+        else:
+            self.getKeywords = GetKeywords()
+
         self.getKeywords.exec_()
 
         if not self.getKeywords.isVisible():
@@ -94,33 +101,34 @@ class MainWindow(QMainWindow):
             self.keywordsEdit.setText(keywordsStr)
 
     def file_scanner(self):
-        path = self.pathEdit.text()
-        dirscanner = DirScanner(self.keywordsList, path)
-        results = dirscanner.result
+        try:
+            path = self.pathEdit.text()
+            dirscanner = DirScanner(self.keywordsList, path)
+            results = dirscanner.result
 
-        countRow = int(self.resultBox.currentText())
-        self.resultTableWidget.setRowCount(countRow)
-        header = self.resultTableWidget.horizontalHeader()
-        header.setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch)
-        header.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
+            countRow = int(self.resultBox.currentText())
+            self.resultTableWidget.setRowCount(countRow)
+            header = self.resultTableWidget.horizontalHeader()
+            header.setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch)
+            header.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
 
-        #results = {'Chronologia ważniejszych faktów dot.docx': 25, 'Nowy Dokument tekstowy (2).txt': 15, 'Nowy Dokument tekstowy.txt': 5, "cos.txt" : 0}
+            results = {k: v for k, v in sorted(results.items(), key=lambda item: item[1], reverse=True)}
 
-        results = {k: v for k, v in sorted(results.items(), key=lambda item: item[1], reverse=True)}
+            tempResult = {}
+            totalValue = 0
+            counter = 0
 
-        tempResult = {}
-        totalValue = 0
-        counter = 0
+            for key, value in zip(results.keys(), results.values()):
+                if counter < countRow:
+                    tempResult[key] = value
+                    counter += 1
+                    totalValue += value
 
-        for key, value in zip(results.keys(), results.values()):
-            if counter < countRow:
-                tempResult[key] = value
+            results = tempResult
+            counter = 0
+            for path, value in zip(results.keys(), results.values()):
+                self.resultTableWidget.setItem(counter, 0, QTableWidgetItem(path))
+                self.resultTableWidget.setItem(counter, 1, QTableWidgetItem(str(round(value / totalValue * 100, 2)) + "%"))
                 counter += 1
-                totalValue += value
-
-        results = tempResult
-        counter = 0
-        for path, value in zip(results.keys(), results.values()):
-            self.resultTableWidget.setItem(counter, 0, QTableWidgetItem(path))
-            self.resultTableWidget.setItem(counter, 1, QTableWidgetItem(str(round(value / totalValue * 100, 2)) + "%"))
-            counter += 1
+        except:
+            warning = QMessageBox.warning(None, "Błąd danych wejściowych", "Niepoprawne dane wejsciowe")
