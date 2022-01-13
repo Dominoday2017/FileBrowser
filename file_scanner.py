@@ -1,5 +1,7 @@
 import docx
 import datetime
+import os
+import time
 
 
 """
@@ -22,8 +24,35 @@ def log(func):
     return wrapper
 
 
+class DirScanner:
+    def __init__(self, keywords, directory):
+        self.keywords = keywords
+        self.directory = directory
+        self.result = {}
+
+        self.iter_file()
+
+    #@timer
+    def iter_file(self):
+        """
+        read all files in dir and pass them to file_scanner
+        :return:
+        """
+        for file in os.listdir(self.directory):
+            if "." not in file:
+                print("No supported file format")
+            else:
+                extension = file.split(".")[1]
+                if extension in ["docx", "doc", "txt"]:
+                    fileScanner = FileScanner(extension, self.directory, file, self.keywords)
+                    self.result = self.result | fileScanner.result
+                else:
+                    print("No supported file extension")
+
+
+
 class FileScanner:
-    @log
+    #@log
     def __init__(self, extension, directory, file, wordList):
         """
         init 4 elements and pass them to pass_path()
@@ -34,11 +63,12 @@ class FileScanner:
         """
         self.userWordList = wordList # Init keywords list (only user words)
         self.keywords = [] #final keywords list
+        self.result = {}
 
         self.findSynonyms()
         self.pass_path(extension, directory, file)
 
-    @log
+    #@log
     def pass_path(self, extension, directory, file):
         """
         pick correct extension and pass full path to method
@@ -48,15 +78,16 @@ class FileScanner:
         :return:
         """
         fullPath = directory + "/" + file
-
-        if extension == ".txt":
+        #print(extension)
+        if extension == "txt":
             txtValue = self.read_txt(fullPath)
-            print(txtValue)
-        elif extension == ".docx":
+            self.result[file] = txtValue
+        elif extension == "docx":
             docxValue = self.read_docx(fullPath)
-            print(docxValue)
+            self.result[file] = docxValue
 
-    @log
+
+    #@log
     def findSynonyms(self):
         """
         find all synonyms from word list and return them
@@ -77,9 +108,9 @@ class FileScanner:
                         else:
                             if [word] not in self.keywords:
                                 self.keywords.append([word])
-        print(self.keywords)
+        #print(self.keywords)
 
-    @log
+    #@log
     def read_txt(self, path):
         """
         open file and read line by line. If word in wordList is in line, increase counter by one
@@ -87,7 +118,7 @@ class FileScanner:
         :return: number of words in file
         """
         counter = 0
-
+        #print("read text")
         with open(path, "r") as file:
             for line in file:
                 for word_list in self.keywords:
@@ -96,7 +127,7 @@ class FileScanner:
                             counter += 1
         return counter
 
-    @log
+    #@log
     def read_docx(self, path):
         """
         open file and read line by line. If word in wordList is in line, increase counter by one
@@ -114,13 +145,6 @@ class FileScanner:
         return counter
 
 # Example
-"""
-words = ["produkcja", "wrocław"]
-test = FileScanner(
-    ".docx",
-    "/home/dominik/Desktop/documents",
-    "Krótka historia aparatury pomiarowej w ELWRO.docx",
-    words
-)
-"""
 
+#words = ["jajko", "mielonka", "rozwój", "produkowana"]
+#test = DirScanner(words, "C:/Users/gawla/Desktop/documents")

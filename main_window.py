@@ -1,5 +1,5 @@
 import sys
-from dir_scanner import DirScanner
+from file_scanner import DirScanner
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5 import QtWidgets, uic
@@ -60,7 +60,7 @@ class MainWindow(QMainWindow):
         super().__init__()
         uic.loadUi("main_window.ui", self)
 
-        self.keywords = []
+        self.keywordsList = []
         self.path = ""
 
         self.pathBtn.clicked.connect(self.get_path)
@@ -83,13 +83,15 @@ class MainWindow(QMainWindow):
 
             for el in self.keywords:
                 keywordsStr += el + ", "
+                self.keywordsList.append(el)
 
             keywordsStr = keywordsStr[0:len(keywordsStr)-2]
             self.keywordsEdit.setText(keywordsStr)
 
     def run_dirscanner(self):
-        keywords = self.keywordsEdit.text()
+        #keywords = self.keywordsEdit.text()
         path = self.pathEdit.text()
 
-        print(keywords, path)
-        dirscanner = DirScanner(keywords, path)
+        #print(self.keywordsList, path)
+        dirscanner = DirScanner(self.keywordsList, path)
+        print(dirscanner.result)
