@@ -23,6 +23,21 @@ def log(func):
         return value
     return wrapper
 
+def timer(func):
+    """
+    Function worktime counter
+    :param func: function to run and check worktime
+    :return:
+    """
+    def wrapper(*args, **kwargs):
+        before = time.time()
+        v = func(*args, **kwargs)
+        workTime = time.time() - before
+        with open("timer_logs", "a+") as file:
+            file.write(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} >> Work time: {workTime} \n")
+        return v
+
+    return wrapper
 
 class DirScanner:
     def __init__(self, keywords, directory):
