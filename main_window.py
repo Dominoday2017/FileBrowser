@@ -6,7 +6,7 @@ from PyQt5 import QtWidgets, uic
 
 
 """
-TODO: comments
+TODO: comments, empty values after search
 """
 
 
@@ -65,7 +65,12 @@ class MainWindow(QMainWindow):
 
         self.pathBtn.clicked.connect(self.get_path)
         self.addBtn.clicked.connect(self.get_keywords)
-        self.searchBtn.clicked.connect(self.run_dirscanner)
+        self.searchBtn.clicked.connect(self.file_scanner)
+
+        self.resultTableWidget.setRowCount(int(self.resultBox.currentText()))
+        header = self.resultTableWidget.horizontalHeader()
+        header.setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch)
+        header.setSectionResizeMode(1, QtWidgets.QHeaderView.Stretch)
 
         self.show()
 
@@ -88,10 +93,34 @@ class MainWindow(QMainWindow):
             keywordsStr = keywordsStr[0:len(keywordsStr)-2]
             self.keywordsEdit.setText(keywordsStr)
 
-    def run_dirscanner(self):
-        #keywords = self.keywordsEdit.text()
+    def file_scanner(self):
         path = self.pathEdit.text()
-
-        #print(self.keywordsList, path)
         dirscanner = DirScanner(self.keywordsList, path)
-        print(dirscanner.result)
+        results = dirscanner.result
+
+        countRow = int(self.resultBox.currentText())
+        self.resultTableWidget.setRowCount(countRow)
+        header = self.resultTableWidget.horizontalHeader()
+        header.setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch)
+        header.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
+
+        #results = {'Chronologia ważniejszych faktów dot.docx': 25, 'Nowy Dokument tekstowy (2).txt': 15, 'Nowy Dokument tekstowy.txt': 5, "cos.txt" : 0}
+
+        results = {k: v for k, v in sorted(results.items(), key=lambda item: item[1], reverse=True)}
+
+        tempResult = {}
+        totalValue = 0
+        counter = 0
+
+        for key, value in zip(results.keys(), results.values()):
+            if counter < countRow:
+                tempResult[key] = value
+                counter += 1
+                totalValue += value
+
+        results = tempResult
+        counter = 0
+        for path, value in zip(results.keys(), results.values()):
+            self.resultTableWidget.setItem(counter, 0, QTableWidgetItem(path))
+            self.resultTableWidget.setItem(counter, 1, QTableWidgetItem(str(round(value / totalValue * 100, 2)) + "%"))
+            counter += 1
