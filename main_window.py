@@ -1,4 +1,6 @@
+import datetime
 import sys
+import time
 from file_scanner import DirScanner
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
@@ -6,7 +8,16 @@ from PyQt5 import QtWidgets, uic
 
 
 """
-TODO: comments, search by title, add search by sentence, advanced logger
+TODO: comments,
+search by title,
+add search by sentence,
+advanced logger,
+window name,
+loading bar,
+if no txt file in folder show notification,
+jak nie ma slowa w pliku to i tak znajduje cos,
+otwieranie plikow z list wynikow,
+elementy przy anuluj sie usuwaja,
 """
 
 
@@ -19,7 +30,7 @@ class GetKeywords(QDialog):
         super().__init__()
         uic.loadUi("add_keywords.ui", self)
 
-        self.setFixedSize(400, 300)
+        self.setFixedSize(410, 300)
         self.keywords = []
 
         if actualKeywords:
@@ -30,6 +41,7 @@ class GetKeywords(QDialog):
         self.addBtn.clicked.connect(self.add_keyword)
         self.removeBtn.clicked.connect(self.remove_element)
         self.saveBtn.clicked.connect(self.save_keywords)
+        self.clearBtn.clicked.connect(self.clear_elements)
 
         self.show()
 
@@ -42,6 +54,8 @@ class GetKeywords(QDialog):
         wordList = []
         if keyword == "":
             warning = QMessageBox.warning(None, "Błąd danych wejściowych", "Nie można dodawać pustych elementów do listy.")
+        elif "," in keyword or ";" in keyword or "." in keyword:
+            warning = QMessageBox.warning(None, "Błąd danych wejściowych", "Nie można korzystać z kropek, przecinków i średników")
         else:
             for el in range(self.keywordsListWidget.count()):
                 wordList.append(self.keywordsListWidget.item(el).text())
@@ -59,6 +73,9 @@ class GetKeywords(QDialog):
         """
         item = self.keywordsListWidget.currentRow()
         self.keywordsListWidget.takeItem(item)
+
+    def clear_elements(self):
+        self.keywordsListWidget.clear()
 
     def save_keywords(self):
         """
@@ -78,6 +95,17 @@ class GetKeywords(QDialog):
         self.close()
 
 
+class LoadWidget(QWidget):
+    def __init__(self):
+        super().__init__()
+        uic.loadUi("loading.ui", self)
+        self.show()
+        self.movie = QMovie("loading.gif")
+        self.loadLbl.setMovie(self.movie)
+        self.movie.start()
+        time.sleep(2)
+
+
 class MainWindow(QMainWindow):
     def __init__(self):
         """
@@ -87,6 +115,7 @@ class MainWindow(QMainWindow):
         uic.loadUi("main_window.ui", self)
 
         self.setFixedSize(610, 530)
+        #self.setWindowModality(QtCore.Qt.ApplicationModal)
 
         self.keywordsList = []
         self.path = ""
@@ -112,7 +141,7 @@ class MainWindow(QMainWindow):
 
     def get_keywords(self):
         """
-        
+
         :return: None
         """
         if self.keywordsEdit.text() != "":
@@ -122,7 +151,9 @@ class MainWindow(QMainWindow):
         else:
             self.getKeywords = GetKeywords()
 
-        self.getKeywords.exec_()
+        self.setEnabled(False)  # Disable main window
+        self.getKeywords.exec()
+
 
         if not self.getKeywords.isVisible():
             keywordsStr = ""
@@ -134,27 +165,38 @@ class MainWindow(QMainWindow):
 
             keywordsStr = keywordsStr[0:len(keywordsStr)-2]
             self.keywordsEdit.setText(keywordsStr)
+            self.setEnabled(True)   # Enable main window
 
     def file_scanner(self):
         try:
             path = self.pathEdit.text()
             keywordsList = [x.replace(" ", "") for x in self.keywordsEdit.text().split(",")]
+
             print(path, keywordsList)
-            if path != "" and keywordsList[0] != "":
+
+            if path != "" and keywordsList[0] != "":    # if path and keywords are added
+                #self.movie = QMovie("loading.gif")
+                #self.loadWidget = LoadWidget()
+                #self.loadWidget.show()
+
                 dirscanner = DirScanner(keywordsList, path)
                 results = dirscanner.result
 
-                countRow = int(self.resultBox.currentText())
+                countRow = int(self.resultBox.currentText())    # Get selected row count by user (1-5)
                 self.resultTableWidget.setRowCount(countRow)
+
+                """ Set result table headers view """
                 header = self.resultTableWidget.horizontalHeader()
                 header.setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch)
                 header.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
 
+                """ sort dict with results """
                 results = {k: v for k, v in sorted(results.items(), key=lambda item: item[1], reverse=True)}
-                tempResult = {}
-                totalValue = 0
+                tempResult = {}     # temp dict to store result dict
+                totalValue = 0      # total result value
                 counter = 0
 
+                """ count total result value until counter is lower than expected results count (countRow) """
                 for key, value in zip(results.keys(), results.values()):
                     if counter < countRow:
                         tempResult[key] = value
@@ -166,6 +208,7 @@ class MainWindow(QMainWindow):
                     results = tempResult
                     counter = 0
 
+                    """ Add results to result table """
                     for path, value in zip(results.keys(), results.values()):
                         self.resultTableWidget.setItem(counter, 0, QTableWidgetItem(path))
                         self.resultTableWidget.setItem(counter, 1, QTableWidgetItem(str(round(value / totalValue * 100, 2)) + "%"))

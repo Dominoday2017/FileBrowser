@@ -23,6 +23,7 @@ def log(func):
         return value
     return wrapper
 
+
 def timer(func):
     """
     Function worktime counter
